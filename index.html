@@ -153,8 +153,9 @@ main{position:relative;z-index:1}
 .ascii-frame{position:relative;background:#000}
 .ascii-frame img,.ascii-frame canvas{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:76% 50%}
 .ascii-frame canvas{position:absolute;inset:0;height:100%}
-.ascii-txt{padding:34px var(--gut) 72px;display:grid;gap:16px}
-.ascii-txt svg{width:150px;height:auto;margin-top:8px}
+.ascii-txt{padding:clamp(48px,11vw,88px) var(--gut) clamp(24px,4vh,48px);display:grid;gap:18px;max-width:calc(34rem + 2*var(--gut))}
+.ascii-txt p{color:var(--mute);margin:0}
+.ascii-txt h2{margin:0}
 @media(min-width:900px){
   .ascii-frame img,.ascii-frame canvas{aspect-ratio:16/9;object-position:50% 50%}
   .ascii{position:relative}
@@ -186,9 +187,6 @@ main{position:relative;z-index:1}
 .get{display:grid;gap:0}
 .get li{display:grid;gap:6px;padding:18px 0;border-top:1px solid var(--line)}
 .get li:last-child{border-bottom:1px solid var(--line)}
-.card-back{position:relative;border-radius:24px;overflow:hidden;isolation:isolate}
-.card-back>img{position:absolute;inset:-8%;width:116%;height:116%;max-width:none;object-fit:cover;filter:blur(26px) brightness(.55);z-index:-1}
-.card-back .card-in{margin:clamp(18px,5vw,56px);background:var(--paper);color:var(--ink);border-radius:16px;padding:clamp(20px,4vw,44px);display:grid;gap:14px;--mute:#5C5C5C}
 
 /* colour chapter */
 .sw{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -281,9 +279,10 @@ main{position:relative;z-index:1}
 .js .wc img{animation:wcDrift 14s ease-in-out infinite alternate}
 .js .wc:nth-child(2n) img{animation-duration:17s;animation-direction:alternate-reverse}
 @keyframes wcDrift{from{transform:scale(1)}to{transform:scale(1.07)}}
-.js .wheel-info{position:absolute;z-index:3;left:50%;bottom:calc(var(--fogh)*.8 + 22px);width:min(30rem,calc(100% - 2*var(--gut)));transform:translateX(-50%);text-align:center;justify-items:center}
+.js .wheel-info{position:absolute;z-index:3;left:50%;bottom:calc(var(--fogh)*.8);align-content:end;width:min(40rem,calc(100% - 2*var(--gut)));transform:translateX(-50%);text-align:center;justify-items:center}
 .js .wheel-info .d2{font-size:clamp(1.5rem,3.4vw,2.6rem)}
-.js .wheel-note{position:absolute;z-index:3;left:var(--gut);right:var(--gut);bottom:calc(var(--fogh)*.8 - 14px);margin:0;text-align:center;max-width:none}
+.js .wheel-note{margin:6px 0 0;font-size:.72rem;max-width:26rem}
+.js .wheel-info .d2{text-wrap:balance}
 @media (prefers-reduced-motion:reduce){.js .wc img{animation:none}}
 /* closing */
 .closing .in{width:100%;padding:0 var(--gut) clamp(20px,4vh,36px);display:grid;gap:clamp(26px,6vh,60px)}
@@ -344,6 +343,34 @@ html.ld-on,html.ld-on body{overflow:hidden}
 .ld-num{font-size:clamp(2.6rem,8vw,5.6rem);line-height:.82;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff}
 .ld-tag{font-size:.8rem;color:#A9A9A9}
 .ld-bar{position:absolute;left:0;right:0;bottom:0;height:2px;background:#fff;transform:scaleX(0);transform-origin:0 50%}
+
+/* Outfit specimen on a dark stage: light catches two invisible edges at the brand angle and moves with the scroll */
+.lit{position:relative;width:100vw;margin-left:calc(50% - 50vw);min-height:clamp(560px,96vh,900px);display:grid;place-items:center;overflow:hidden;background:var(--ink);color:#fff;isolation:isolate;--p:.55}
+.lit-in{position:relative;z-index:2;width:min(48rem,calc(100% - 2*var(--gut)));display:grid;gap:clamp(16px,2.4vh,24px);justify-items:center;text-align:center}
+.lit-in .d3{margin:0;color:#fff}
+.lit-big{margin:0;font-weight:300;font-size:clamp(1.3rem,3.2vw,2.6rem);line-height:1.38;letter-spacing:-.005em;text-wrap:balance}
+.lit-note{margin:0;color:#A9A9A9;font-size:.95rem;line-height:1.55;max-width:31rem;text-wrap:pretty}
+.beam{position:absolute;z-index:1;display:block;height:0;pointer-events:none;--len:1;--a:1;--hs:.5}
+.beam>i{position:absolute;display:block;left:0;right:0}
+.b1{left:-14vw;top:16%;width:calc(min(58vw,760px) + 14vw);transform-origin:0 0;transform:rotate(27deg)}
+.b2{right:-14vw;bottom:15%;width:calc(min(58vw,760px) + 14vw);transform-origin:100% 0;transform:rotate(27deg)}
+.beam .core{top:-1.25px;height:2.5px;border-radius:2px;opacity:var(--a);transform:scaleX(var(--len));
+  background:linear-gradient(90deg,#fff,rgba(255,255,255,.95) 34%,rgba(255,255,255,.35) 72%,transparent);
+  filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px rgba(255,255,255,.75)) drop-shadow(0 0 34px rgba(255,255,255,.35))}
+.b2 .core{transform-origin:100% 50%;background:linear-gradient(270deg,#fff,rgba(255,255,255,.95) 34%,rgba(255,255,255,.35) 72%,transparent)}
+.b1 .core{transform-origin:0 50%}
+.beam .cone{top:0;height:clamp(140px,34vh,330px);opacity:calc(var(--a)*.9);transform:scaleX(var(--len));transform-origin:0 0;filter:blur(14px);
+  background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.1) 34%,transparent 80%);
+  -webkit-mask:linear-gradient(90deg,#000,rgba(0,0,0,.85) 40%,transparent 92%);mask:linear-gradient(90deg,#000,rgba(0,0,0,.85) 40%,transparent 92%)}
+.b2 .cone{transform-origin:100% 0;-webkit-mask:linear-gradient(270deg,#000,rgba(0,0,0,.85) 40%,transparent 92%);mask:linear-gradient(270deg,#000,rgba(0,0,0,.85) 40%,transparent 92%)}
+.beam .spot{top:-7px;height:14px;width:28%;left:calc(var(--hs)*72%);right:auto;border-radius:50%;opacity:calc(var(--a)*.9);
+  background:radial-gradient(closest-side,#fff,rgba(255,255,255,.5) 45%,transparent);filter:blur(4px)}
+@media(max-width:899px){
+  .lit{min-height:clamp(560px,100svh,760px)}
+  .b1{top:9%;width:98vw}
+  .b2{bottom:8%;width:98vw}
+}
+.lit-fx{position:absolute;inset:0;z-index:1;pointer-events:none;-webkit-mask:linear-gradient(transparent,#000 16%,#000 84%,transparent);mask:linear-gradient(transparent,#000 16%,#000 84%,transparent)}
 
 </style>
 </head>
@@ -498,7 +525,6 @@ html.ld-on,html.ld-on body{overflow:hidden}
   <div class="ascii-txt">
     <h2 class="d2">Quem aparece na frente.</h2>
     <p>O influenciador é o rosto. A West opera o que ninguém vê e transforma audiência em empresa. Nas peças, o retrato vem primeiro e a marca assina pequena.</p>
-    <svg viewBox="0 0 309.9 80.4" aria-hidden="true"><use href="#lk-h"/></svg>
   </div>
 </section>
 
@@ -527,12 +553,15 @@ html.ld-on,html.ld-on body{overflow:hidden}
       </div>
     </div>
 
-    <div class="card-back">
-      <img src="img/09-plates-b.jpg" alt="" loading="lazy">
-      <div class="card-in">
+    <div class="lit" id="lit">
+      <div class="lit-fx" aria-hidden="true">
+        <i class="beam b1"><i class="cone"></i><i class="core"></i><i class="spot"></i></i>
+        <i class="beam b2"><i class="cone"></i><i class="core"></i><i class="spot"></i></i>
+      </div>
+      <div class="lit-in">
         <h3 class="d3">Outfit, para texto</h3>
-        <p style="font-size:clamp(1.15rem,2.6vw,1.6rem);line-height:1.45;max-width:40rem">Estruturamos a operação inteira. Você influencia, a West opera: jurídico, sistema, marketing e vendas em um só ecossistema.</p>
-        <p class="note">Outfit Light 300 para parágrafos, Regular 400 para interface e Medium 500 para legendas. Os círculos do “c” e do “o” repetem o desenho do “co.” da assinatura.</p>
+        <p class="lit-big">Estruturamos a operação inteira. Você influencia, a West opera: jurídico, sistema, marketing e vendas em um só ecossistema.</p>
+        <p class="lit-note">Outfit Light 300 para parágrafos, Regular 400 para interface e Medium 500 para legendas. Os círculos do “c” e do “o” repetem o desenho do “co.” da assinatura.</p>
       </div>
     </div>
 
@@ -698,8 +727,8 @@ html.ld-on,html.ld-on body{overflow:hidden}
       <span class="num wheel-n" id="wN">01 / 14</span>
       <h3 class="d2" id="wT">Sinalização</h3>
       <p id="wD">Caixa de luz com a assinatura horizontal em branco sobre preto. Lida de longe, sem nada em volta.</p>
+      <p class="note wheel-note">Simulações para direção de arte, com a marca aplicada a partir do vetor original.</p>
     </div>
-    <p class="note wheel-note">Simulações para direção de arte, com a marca aplicada a partir do vetor original.</p>
   </div>
 </section>
 
@@ -865,7 +894,7 @@ const S=o=>Object.assign({rx:18,ry:-34,spread:1.2,flat:0,scale:1,ox:0,oy:0,theme
 const els={concept:$('.concept'),pose:$('.pose'),closing:$('.closing'),deck:$('.deck'),ascii:$('.ascii'),band:$('#band'),ratio:$('#ratio')};
 let keys=[], M={}, segs=[], sBlur=0;
 const tones=$$('main > *');
-const REV='.sec .head>*,.sec h3.d3,.sec .block>p,.ver,.chip,.facts li,.scale li,.pillars li,.weights li,.lines li,.say>div,.diagram,.mins,.donts li,.spec>*,.card-back,.tester,.get li,.rule figure,.ratio,.ratio-key,.matter,.seg,.ascii-txt>*';
+const REV='.sec .head>*,.sec h3.d3,.sec .block>p,.ver,.chip,.facts li,.scale li,.pillars li,.weights li,.lines li,.say>div,.diagram,.mins,.donts li,.spec>*,.lit-in>*,.tester,.get li,.rule figure,.ratio,.ratio-key,.matter,.seg,.ascii-txt>*';
 const revAll=$$(REV), rev=RM?[]:revAll.filter(e=>!revAll.some(o=>o!==e&&o.contains(e))).map(e=>({e,top:0,lag:0,p:-1}));
 const top=el=>el.getBoundingClientRect().top+scrollY;
 function measure(){
@@ -1016,10 +1045,33 @@ function vis(y,dt){
 const wheel=$('#wheel'), wcs=$$('#wheel .wc'), wT=$('#wT'), wD=$('#wD'), wN=$('#wN');
 const W={x:0,drift:0,i:-1,cw:240,ch:320,R:900,cx:0,cy:0,step:.28};
 function wheelMeasure(){
-  const ch=Math.min(VH*(MOB?.4:.46),(MOB?VW*.62:VW*.3)*4/3,440), cw=ch*.75;
-  W.ch=ch; W.cw=cw; W.R=Math.max(MOB?VW*.6:VW*.56,ch*2.05);
-  W.cx=VW/2; W.cy=VH*(MOB?.43:.47)+W.R; W.step=cw*.8/W.R;
+  const tt=$('.wheel-title'), inf=$('.wheel-info');
+  // reserve the tallest caption so the cards never reach the text below them
+  const keep=[wT.textContent,wD.textContent]; let hi=0;
+  inf.style.minHeight='';
+  for(const c of wcs){ wT.textContent=c.dataset.t; wD.textContent=c.dataset.d; hi=Math.max(hi,inf.offsetHeight); }
+  wT.textContent=keep[0]; wD.textContent=keep[1]; inf.style.minHeight=hi+'px';
+  const tB=tt.offsetTop+tt.offsetHeight, iT=inf.offsetTop, gap=MOB?20:28, drop=MOB?16:26;
+  const top=tB-(MOB?tt.offsetHeight*.12:tt.offsetHeight*.32)+gap*.4;
+  const room=iT-gap-drop-top;
+  const ch=Math.max(150,Math.min(room,(MOB?VW*.64:VW*.3)*4/3,460)), cw=ch*.75;
+  W.ch=ch; W.cw=cw; W.R=Math.max(MOB?VW*.62:VW*.56,ch*2.05);
+  W.cx=VW/2; W.cy=top+ch/2+W.R; W.step=cw*.8/W.R;
   wheel.style.setProperty('--cw',cw.toFixed(1)+'px'); wheel.style.setProperty('--chh',ch.toFixed(1)+'px');
+}
+/* ---------- the lit Outfit stage ---------- */
+const lit=$('#lit'), beams=lit?[...lit.querySelectorAll('.beam')]:[];
+function light(){
+  if(!lit) return;
+  const r=lit.getBoundingClientRect(); if(r.bottom<-50||r.top>VH+50) return;
+  const p=RM?.5:clamp((VH-r.top)/(VH+r.height));
+  const set=(b,len,a,hs)=>{b.style.setProperty('--len',len.toFixed(3)); b.style.setProperty('--a',a.toFixed(3)); b.style.setProperty('--hs',hs.toFixed(3));};
+  // first edge: grows from the left side, peaks, then retracts toward its far end
+  const g1=ss((p-.08)/.3), o1=1-ss((p-.72)/.2);
+  set(beams[0],g1,Math.min(g1*1.2,1)*o1*(.82+.18*Math.sin(p*9)),clamp((p-.1)/.7));
+  // second edge: enters from the right a little later
+  const g2=ss((p-.32)/.3), o2=1-ss((p-.88)/.12);
+  set(beams[1],g2,Math.min(g2*1.2,1)*o2*(.82+.18*Math.cos(p*8)),clamp((p-.3)/.6));
 }
 function swapText(el,txt){
   if(el.textContent===txt) return; el.textContent=txt;
@@ -1136,7 +1188,7 @@ function frame(ms){
     if(stage.kind==='three'&&alpha>.6&&probes<40){probes++; if(probes>4){ if(stage.probe()) probes=99; else if(++bad>12) useCss(); }}
   }
   glass(visible?alpha:0,dt);
-  vis(y,dt); deck(y,dt); ascii(); details(y,s.theme);
+  light(); vis(y,dt); deck(y,dt); ascii(); details(y,s.theme);
   requestAnimationFrame(frame);
 }
 function useCss(){ try{stage.dispose()}catch(e){} canvas.style.display='none'; stage=cssStage(stageEl); stage.resize(VW,VH,devicePixelRatio); }
