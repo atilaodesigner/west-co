@@ -103,8 +103,8 @@ main{position:relative;z-index:1}
 .cap .tag{display:block}
 .js .pin{height:var(--h,400vh)}
 .js .pin-view{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:block;padding:0}
-.js .cap{position:absolute;left:var(--gut);right:var(--gut);bottom:clamp(30px,7vh,80px);opacity:0;transform:translate3d(0,var(--ty,0px),0);pointer-events:none}
-.js .cap[data-cap="0"]{opacity:1}
+.js .cap{position:absolute;left:var(--gut);right:var(--gut);bottom:clamp(30px,7vh,80px);--o:0;transform:translate3d(0,var(--ty,0px),0);pointer-events:none}
+.js .cap[data-cap="0"]{--o:1}
 @media(min-width:900px){
   .js .cap{right:auto;width:min(30rem,40vw);bottom:auto;top:50%;transform:translate3d(0,calc(-50% + var(--ty,0px)),0)}
   .js .concept .cap[data-cap="0"]{width:min(40rem,47vw)}
@@ -247,26 +247,29 @@ main{position:relative;z-index:1}
 .foot a{color:var(--fg);text-underline-offset:4px}
 @media (prefers-reduced-motion:reduce){.cue i{animation:none}}
 
-/* glass plate behind text. Over the 3D scene it is driven by --g (0 to 1), which the script raises only while a plate
-   is actually behind the text; over the photo band it is always on. Kept free of ancestors with opacity/will-change. */
-.js .cap,.js .hero .in,.band figcaption{
-  --g:0;--vp:20px;--vx:min(var(--vp),calc(var(--gut) - 12px));
-  padding:var(--vp);border-radius:22px;border:1px solid transparent;
+/* soft veil behind text over the 3D scene: whatever passes behind is blurred and dissolved into the background through a long
+   feather, so there is no panel and no edge. Driven by --g (0 to 1), raised by the script only while a plate is behind the text.
+   Captions fade through their children (--o) so the veil never loses its backdrop to an ancestor with opacity. */
+.js .cap,.js .hero .in,.band figcaption{--g:0;--vt:var(--bg);isolation:isolate}
+.js .hero .in{position:relative;width:fit-content;max-width:calc(100% - 2*var(--gut));padding:0;margin:0 var(--gut) clamp(34px,8vh,80px)}
+.js .cap>*{opacity:var(--o,0)}
+.js .cap.gl::before,.js .cap.gl::after,.js .hero .in.gl::before,.js .hero .in.gl::after,.band figcaption::before,.band figcaption::after{
+  content:"";position:absolute;z-index:-1;pointer-events:none;opacity:calc(var(--o,1)*var(--g));
+  --m:linear-gradient(90deg,transparent,rgba(0,0,0,.1) calc(var(--f)*.3),rgba(0,0,0,.68) calc(var(--f)*.75),#000 var(--f),#000 calc(100% - var(--f)),rgba(0,0,0,.68) calc(100% - var(--f)*.75),rgba(0,0,0,.1) calc(100% - var(--f)*.3),transparent),linear-gradient(transparent,rgba(0,0,0,.1) calc(var(--f)*.3),rgba(0,0,0,.68) calc(var(--f)*.75),#000 var(--f),#000 calc(100% - var(--f)),rgba(0,0,0,.68) calc(100% - var(--f)*.75),rgba(0,0,0,.1) calc(100% - var(--f)*.3),transparent);
+  -webkit-mask:var(--m);-webkit-mask-composite:source-in;mask:var(--m);mask-composite:intersect;
 }
-.js .cap.gl,.js .hero .in.gl,.band figcaption{
-  border-color:color-mix(in srgb,var(--fg) calc(var(--g)*11%),transparent);
-  background:linear-gradient(140deg,color-mix(in srgb,var(--fg) calc(var(--g)*7%),transparent),transparent 55%),color-mix(in srgb,var(--bg) calc(var(--g)*44%),transparent);
-  -webkit-backdrop-filter:blur(calc(var(--g)*22px)) saturate(1.15);backdrop-filter:blur(calc(var(--g)*22px)) saturate(1.15);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,calc(var(--g)*.08)),0 22px 44px -30px rgba(0,0,0,calc(var(--g)*.55));
-}
-.band figcaption{--g:1;border-color:rgba(255,255,255,.14);background:linear-gradient(140deg,rgba(255,255,255,.08),transparent 55%),rgba(5,5,5,.3);margin:0 calc(-1*var(--vx)) calc(-1*var(--vp));max-width:calc(30rem + 2*var(--vp))}
-.js .cap{margin:0 calc(-1*var(--vx)) calc(-1*var(--vp));max-width:calc(34rem + 2*var(--vp))}
-.js .hero .in{width:fit-content;max-width:calc(100% - 2*(var(--gut) - var(--vx)));margin:0 calc(var(--gut) - var(--vx)) calc(clamp(34px,8vh,80px) - var(--vp))}
-@media(min-width:900px){
-  .js .cap,.js .hero .in,.band figcaption{--vp:28px;border-radius:28px}
-  .js .cap{width:calc(min(30rem,40vw) + 2*var(--vp))}
-  .js .concept .cap[data-cap="0"]{width:calc(min(40rem,47vw) + 2*var(--vp))}
-}
+.js .cap.gl::before,.js .hero .in.gl::before,.band figcaption::before{--f:100px;inset:-110px;background:color-mix(in srgb,var(--vt) 22%,transparent);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+.js .cap.gl::after,.js .hero .in.gl::after,.band figcaption::after{--f:66px;inset:-44px;background:color-mix(in srgb,var(--vt) 46%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.band figcaption{--g:1;--vt:#050505}
+.band figcaption::before{background:rgba(5,5,5,.16)}
+.band figcaption::after{background:rgba(5,5,5,.3)}
+
+/* a very light blur along the bottom edge of the window in the reading chapters: content comes into focus as it scrolls up */
+.fog{display:none}
+.js .fog{display:block;position:fixed;z-index:15;left:0;right:0;bottom:0;height:20vh;pointer-events:none}
+.fog i{position:absolute;left:0;right:0;bottom:0;opacity:var(--fog,0)}
+.fog i:first-child{height:100%;-webkit-backdrop-filter:blur(1px);backdrop-filter:blur(1px);-webkit-mask:linear-gradient(transparent,#000 75%);mask:linear-gradient(transparent,#000 75%)}
+.fog i:last-child{height:46%;-webkit-backdrop-filter:blur(2.4px);backdrop-filter:blur(2.4px);-webkit-mask:linear-gradient(transparent,#000 90%);mask:linear-gradient(transparent,#000 90%)}
 
 </style>
 </head>
@@ -274,6 +277,7 @@ main{position:relative;z-index:1}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="lk-s" viewBox="0 0 166.5 174.7"><path class="k-b" d="M151.1 156.3C147.1 157.9 142.8 158.1 139 156L125.9 148.8L125.7 95.2C125.6 87.6 121 81.3 114.5 77.8L52.7 44.8L52.7 18.6C52.7 14.1 54.9 10.2 57.9 7.2C59.5 5.8 60.9 4.9 62.7 3.8C67.9 0.7 74.4 0 79.9 2.8L134.3 30.3L156.4 41.6C162.2 44.6 165.7 50.7 166.4 57L166.5 113.7L166.5 137.1C166.5 142.2 164 146.8 160.3 150.1C157.4 152.6 154.4 154.3 151.1 156.3Z"/><path class="k-m" d="M91.7 167.4L75.4 158.1L75.5 131.6C75.5 124 71.5 118 65.1 114.5L27.3 93.6L27.3 73.2C27.3 69.1 29.4 65.5 32.2 62.7C33.7 61.4 35.2 60.4 36.9 59.4C41.4 56.8 47 56.1 51.7 58.6L65.1 65.7L106.8 87.9C111.5 90.4 114.8 94.9 115.4 100.2L115.7 151.8C115.8 156.1 113.9 160.1 110.7 162.9C108.7 164.7 106.7 166 104.3 167.2C100.5 169.3 95.8 169.5 91.7 167.4Z"/><path class="k-f" d="M54.1 172.7C50.5 174.5 46.1 174.7 42.5 172.6L6.9 152.3C2.9 150 0 145.6 0 141L0 119.9C0 113.4 5.2 108.4 10.9 105.7C14.8 103.9 19.6 103.7 23.5 105.8L58.3 125.1C62.6 128 64.6 132.5 64.6 137.7L64.7 157.7C64.7 161.9 63.4 165.9 60.1 168.7C58.3 170.3 56.4 171.5 54.1 172.7Z"/></symbol><symbol id="lk-w" viewBox="0 0 346.9 84.5"><path class="k-w" d="M102.7 18.5L96.9 34.8L83.8 70.6C82 75.7 77.8 78.5 72.3 78.2C68.7 77.9 64.2 76.8 62.8 73L52.5 45.8C52.3 45.2 51.6 45 51.3 44.9C50.9 44.8 50 45 49.7 45.7L39.8 71.9C38.1 76.4 34.1 78.3 29.3 78.2C25.6 78 20.9 76.9 19.4 72.8L0 18.7L10.2 18.4L27.7 68.6C27.9 69.3 28.8 69.4 29.1 69.5C29.7 69.5 30.5 69.2 30.8 68.4L41.1 41.7C42.6 37.7 47 36 51.2 35.9C54.8 35.9 59.6 37.2 61 40.9L71.2 68.2C71.5 69.1 72 69.5 72.7 69.5C73.1 69.6 74.2 69.2 74.5 68.4L92.5 18.7L102.7 18.5Z"/><path class="k-w" d="M153 42.9C151.6 32.9 144 26.5 134.8 25.8C123.9 25 113.9 31.9 112.2 43.1L153 42.9ZM127.2 69.2C137.1 72.1 147.3 68.9 153.7 61L160.2 66.8C153.1 75.6 142.5 79.6 131.1 78.7C113.8 77.5 101.2 63.3 102.3 46C103.3 30 115.5 18.1 131.8 17.4C140.9 17 149.4 20.2 155.4 26.8C161.4 33.3 164 42.1 162.6 51.2L112.2 51.2C113 59.9 119 66.8 127.2 69.2Z"/><path class="k-w" d="M206.9 77.7L169.3 78.2L169.3 69.4L204.5 69.2C209.3 69.1 212.7 64.8 212.8 60.8C212.8 56.1 209.2 52.1 204.2 52L186.8 51.7C181.5 51.7 176.4 50 172.7 46C168.4 41.4 167.5 34.4 170 28.5C172.2 23.3 177.9 18.8 184.5 18.7L217.7 18.4L217.7 26.8L185.7 27C181.1 27.1 178 31.4 178.1 35.2C178.1 39.5 181.6 42.9 186.1 43L204.4 43.3C209.5 43.4 214.5 45.5 218 49.2C222.5 54 223.6 60.7 221.2 67.1C219.3 72 213.7 77.6 206.9 77.7Z"/><path class="k-w" d="M239.3 32.4L239.4 62.9C239.4 66.4 242 69.2 245.8 69.3L268.4 69.4L268.4 78.1L242.6 77.9C234.5 77.8 229.6 71.1 229.6 63.4L229.7 0L239.5 0L239.5 18.6L268.4 18.5L268.3 26.8L234.2 26.9C236.2 28.7 239.2 29.5 239.3 32.4Z"/><path class="k-c" d="M334.3 67.3C334.3 61.4 329.5 56.5 323.5 56.5C317.6 56.5 312.7 61.4 312.7 67.3C312.7 73.3 317.6 78.1 323.5 78.1C329.5 78.1 334.3 73.3 334.3 67.3ZM329.1 81.3C319.9 84.5 309.9 79.2 308.3 70C307.3 64.3 309.4 58.9 313.9 55.6C318.5 52.2 324.3 51.6 329.6 53.6C335.5 55.9 339.2 61.4 339.1 67.6C339 73.7 335.2 79.1 329.1 81.3Z"/><path class="k-c" d="M303.7 74.5L306.9 77.5C303.8 80.9 299.7 82.3 295.2 82.2C289.7 82.1 284.7 79.4 281.9 74.5C278.6 68.6 279.8 61.2 284.9 56.5C291 50.9 300.7 51.1 306.8 57L303.6 60C299.8 56.2 294.3 55.5 289.9 58.2C285.4 60.9 283.6 66.5 285.5 71.5C286.9 75 290.1 77.3 293.3 77.9C297.2 78.6 300.9 77.5 303.7 74.5Z"/><path class="k-c" d="M346.9 79C346.9 80.8 345.4 82.2 343.6 82.2C341.8 82.2 340.4 80.8 340.4 79C340.4 77.2 341.8 75.8 343.6 75.8C345.4 75.8 346.9 77.2 346.9 79Z"/></symbol><symbol id="lk-h" viewBox="0 0 309.9 80.4"><path class="k-b" d="M69.5 71.9C67.7 72.6 65.7 72.7 64 71.8L57.9 68.5L57.8 43.8C57.8 40.3 55.7 37.4 52.7 35.8L24.2 20.6L24.3 8.5C24.3 6.5 25.3 4.7 26.7 3.3C27.4 2.7 28 2.2 28.9 1.7C31.2 0.3 34.2 0 36.8 1.3L61.8 13.9L72 19.2C74.6 20.5 76.2 23.3 76.6 26.2L76.6 52.3L76.6 63.1C76.6 65.4 75.5 67.5 73.7 69C72.4 70.2 71 71 69.5 71.9Z"/><path class="k-m" d="M42.2 77L34.7 72.8L34.7 60.5C34.7 57.1 32.9 54.3 30 52.7L12.6 43.1L12.6 33.7C12.6 31.8 13.5 30.1 14.8 28.9C15.5 28.3 16.2 27.8 17 27.3C19 26.1 21.6 25.8 23.8 27L29.9 30.2L49.1 40.4C51.3 41.6 52.8 43.6 53.1 46.1L53.2 69.8C53.3 71.8 52.4 73.7 50.9 74.9C50 75.7 49.1 76.4 48 76.9C46.2 77.9 44.1 78 42.2 77Z"/><path class="k-f" d="M24.9 79.4C23.2 80.3 21.2 80.4 19.5 79.4L3.2 70C1.3 69 0 67 0 64.9L0 55.1C0 52.2 2.4 49.9 5 48.6C6.8 47.8 9 47.7 10.8 48.7L26.8 57.5C28.8 58.9 29.7 61 29.7 63.3L29.8 72.6C29.8 74.5 29.2 76.3 27.6 77.6C26.8 78.3 26 78.9 24.9 79.4Z"/><path class="k-w" d="M161.6 27.8L158.1 37.7L150.2 59.4C149 62.5 146.5 64.3 143.2 64C141 63.9 138.3 63.2 137.4 60.9L131.2 44.4C131 44 130.6 43.9 130.4 43.8C130.2 43.8 129.6 43.9 129.5 44.3L123.4 60.2C122.4 62.9 120 64.1 117.1 64C114.8 64 111.9 63.2 111 60.8L99.3 27.9L105.5 27.8L116.1 58.3C116.2 58.6 116.7 58.7 117 58.7C117.3 58.8 117.8 58.6 118 58.1L124.2 41.9C125.1 39.5 127.8 38.4 130.4 38.4C132.6 38.4 135.5 39.2 136.3 41.4L142.5 58C142.7 58.5 143 58.8 143.4 58.8C143.7 58.8 144.3 58.6 144.5 58.1L155.4 27.9L161.6 27.8Z"/><path class="k-w" d="M192.2 42.6C191.3 36.5 186.7 32.6 181.1 32.2C174.5 31.7 168.5 35.9 167.4 42.7L192.2 42.6ZM176.5 58.6C182.5 60.3 188.7 58.4 192.6 53.6L196.6 57.1C192.2 62.5 185.8 64.9 178.9 64.4C168.4 63.6 160.7 55 161.4 44.5C162 34.8 169.4 27.6 179.3 27.1C184.8 26.9 190 28.9 193.6 32.8C197.3 36.8 198.9 42.1 198 47.6L167.4 47.7C167.9 53 171.5 57.1 176.5 58.6Z"/><path class="k-w" d="M224.9 63.7L202.1 64L202.1 58.7L223.5 58.6C226.4 58.5 228.5 55.9 228.5 53.5C228.5 50.6 226.3 48.2 223.3 48.1L212.7 48C209.5 47.9 206.4 46.9 204.1 44.5C201.5 41.7 201 37.5 202.5 33.8C203.9 30.7 207.3 28 211.3 27.9L231.5 27.7L231.5 32.9L212 33C209.2 33 207.4 35.6 207.4 38C207.4 40.5 209.5 42.6 212.3 42.7L223.4 42.9C226.5 42.9 229.5 44.2 231.7 46.4C234.4 49.3 235.1 53.4 233.6 57.3C232.4 60.3 229 63.7 224.9 63.7Z"/><path class="k-w" d="M244.6 36.2L244.7 54.7C244.7 56.9 246.2 58.6 248.5 58.6L262.3 58.7L262.2 64L246.6 63.9C241.7 63.8 238.7 59.8 238.7 55.1L238.8 16.6L244.7 16.6L244.7 27.8L262.3 27.8L262.2 32.9L241.5 32.9C242.7 34 244.6 34.5 244.6 36.2Z"/><path class="k-c" d="M302.3 57.5C302.3 53.8 299.4 50.9 295.8 50.9C292.1 50.9 289.2 53.8 289.2 57.5C289.2 61.1 292.1 64 295.8 64C299.4 64 302.3 61.1 302.3 57.5ZM299.1 65.9C293.5 67.9 287.5 64.7 286.5 59.1C285.9 55.6 287.2 52.3 289.9 50.4C292.7 48.3 296.2 47.9 299.4 49.1C303 50.5 305.2 53.9 305.2 57.6C305.1 61.3 302.8 64.6 299.1 65.9Z"/><path class="k-c" d="M283.7 61.8L285.6 63.6C283.8 65.7 281.3 66.5 278.5 66.5C275.2 66.5 272.2 64.8 270.5 61.8C268.5 58.2 269.2 53.7 272.3 50.9C276 47.5 281.9 47.6 285.6 51.2L283.7 53C281.4 50.7 278 50.3 275.3 51.9C272.6 53.6 271.5 56.9 272.7 60C273.5 62.1 275.5 63.5 277.4 63.8C279.8 64.3 282 63.6 283.7 61.8Z"/><path class="k-c" d="M309.9 64.6C309.9 65.6 309 66.5 308 66.5C306.9 66.5 306 65.6 306 64.6C306 63.5 306.9 62.6 308 62.6C309 62.6 309.9 63.5 309.9 64.6Z"/></symbol><symbol id="lk-v" viewBox="0 0 257.6 209.5"><path class="k-b" d="M175.6 111.5C172.8 112.6 169.7 112.7 167 111.2L157.7 106.1L157.5 67.9C157.4 62.5 154.2 58 149.5 55.5L105.4 32L105.5 13.2C105.5 10.1 107 7.3 109.2 5.1C110.3 4.2 111.3 3.5 112.6 2.7C116.2 0.5 120.9 0 124.8 2L163.6 21.6L179.4 29.7C183.5 31.8 186 36.1 186.5 40.7L186.6 81.1L186.6 97.8C186.6 101.4 184.8 104.7 182.1 107C180.1 108.8 177.9 110 175.6 111.5Z"/><path class="k-m" d="M133.3 119.4L121.6 112.8L121.7 93.8C121.7 88.4 118.9 84.2 114.3 81.6L87.3 66.8L87.3 52.2C87.3 49.3 88.8 46.7 90.9 44.7C91.9 43.8 93 43.1 94.2 42.4C97.4 40.5 101.4 40 104.7 41.8L114.3 46.8L144 62.7C147.4 64.5 149.7 67.6 150.2 71.5L150.4 108.2C150.4 111.3 149.1 114.2 146.8 116.2C145.4 117.4 143.9 118.4 142.2 119.3C139.5 120.7 136.2 120.9 133.3 119.4Z"/><path class="k-f" d="M106.4 123.1C103.9 124.4 100.7 124.6 98.2 123.1L72.8 108.6C69.9 106.9 67.9 103.8 67.9 100.6L67.9 85.5C67.9 80.9 71.6 77.3 75.7 75.4C78.4 74.1 81.8 73.9 84.6 75.5L109.4 89.2C112.5 91.3 113.9 94.5 113.9 98.2L114 112.5C114 115.5 113 118.3 110.7 120.3C109.4 121.4 108.1 122.3 106.4 123.1Z"/><path class="k-w" d="M98.5 150.9L93 166.5L80.4 200.8C78.7 205.7 74.7 208.5 69.4 208.1C65.9 207.9 61.6 206.8 60.3 203.2L50.4 177C50.2 176.5 49.5 176.3 49.2 176.2C48.8 176.1 48 176.2 47.7 176.9L38.2 202.1C36.5 206.4 32.7 208.2 28.1 208.1C24.5 208 20 206.9 18.6 202.9L0 151L9.8 150.8L26.6 199C26.8 199.6 27.6 199.7 28 199.8C28.5 199.8 29.2 199.5 29.5 198.8L39.4 173.2C40.9 169.3 45.1 167.6 49.1 167.6C52.6 167.6 57.2 168.8 58.5 172.4L68.3 198.6C68.6 199.4 69.1 199.8 69.7 199.8C70.2 199.8 71.2 199.5 71.4 198.7L88.7 151L98.5 150.9Z"/><path class="k-w" d="M146.8 174.3C145.5 164.7 138.2 158.5 129.3 157.9C118.9 157.1 109.3 163.7 107.7 174.4L146.8 174.3ZM122 199.5C131.6 202.3 141.4 199.2 147.5 191.6L153.8 197.2C146.9 205.6 136.7 209.5 125.8 208.7C109.2 207.4 97.1 193.8 98.1 177.3C99.1 161.9 110.9 150.5 126.4 149.8C135.2 149.4 143.4 152.5 149.1 158.8C154.9 165.1 157.3 173.5 156 182.2L107.7 182.3C108.4 190.6 114.2 197.2 122 199.5Z"/><path class="k-w" d="M198.5 207.7L162.4 208.1L162.4 199.7L196.2 199.5C200.8 199.4 204.1 195.3 204.1 191.4C204.2 186.9 200.8 183.1 196 183L179.2 182.8C174.2 182.7 169.2 181.1 165.7 177.2C161.6 172.8 160.7 166.2 163.2 160.4C165.3 155.4 170.7 151.1 177 151.1L208.9 150.7L208.9 158.8L178.1 159C173.8 159.1 170.8 163.2 170.8 166.9C170.9 171 174.2 174.3 178.6 174.4L196.1 174.7C201 174.8 205.8 176.7 209.2 180.3C213.5 184.9 214.6 191.3 212.2 197.5C210.4 202.2 205 207.6 198.5 207.7Z"/><path class="k-w" d="M229.6 164.2L229.7 193.4C229.8 196.9 232.2 199.5 235.9 199.6L257.6 199.7L257.5 208.1L232.8 207.8C225 207.8 220.3 201.4 220.3 193.9L220.4 133.1L229.8 133.1L229.8 150.9L257.5 150.9L257.4 158.9L224.7 158.9C226.6 160.7 229.6 161.4 229.6 164.2Z"/></symbol></defs></svg>
 <div class="stage" aria-hidden="true"><canvas id="gl"></canvas></div>
 <div class="prog" id="prog" aria-hidden="true"></div>
+<div class="fog" id="fog" aria-hidden="true"><i></i><i></i></div>
 <header class="bar dark" id="bar">
   <a class="home" href="#topo" aria-label="West Co., voltar ao início"><svg viewBox="0 0 346.9 84.5" aria-hidden="true"><use href="#lk-w"/></svg></a>
   <span class="now" id="now" aria-hidden="true">Brand system</span>
@@ -755,7 +759,7 @@ function measure(){
   const pos=MOB?{hero:[0,-.13],con:[0,-.17],pose:[0,-.15],end:[0,-.16]}:{hero:[.2,-.03],con:[.21,0],pose:[0,-.08],end:[.22,-.05]};
   const at=(p,o)=>S(Object.assign({ox:p[0],oy:p[1]},o));
   const cT=top(els.concept), cL=els.concept.offsetHeight-VH, pT=top(els.pose), pL=els.pose.offsetHeight-VH, eT=top(els.closing);
-  M={cT,cL,pT,pL,eT,dT:top(els.deck),dL:els.deck.offsetHeight-VH,doc:root.scrollHeight-VH};
+  M={cT,cL,pT,pL,eT,dT:top(els.deck),dL:els.deck.offsetHeight-VH,sT:top($('#simbolo')),doc:root.scrollHeight-VH};
   const c=p=>cT+cL*p, q=p=>pT+pL*p, big=MOB?1.25:1.12;
   const rowPos=MOB?[-.05,-.15]:[.19,.02], rowSc=MOB?.66:.82;
   keys=[
@@ -793,11 +797,11 @@ const caps=$$('.concept .cap'), rails=$$('.concept .rail i'), poseCap=$('.pose .
 // each caption: [fade-in start, fade-in end, fade-out start, fade-out end] in scene progress
 const capWin=[[-2,-1,.2,.27],[.29,.35,.46,.51],[.52,.58,.68,.73],[.74,.8,3,4]];
 function capSet(el,a,b){
-  const o=Math.min(a,1-b); el.style.opacity=o.toFixed(3); el.style.setProperty('--ty',((1-a)*26-b*26).toFixed(1)+'px'); el.style.pointerEvents=o>.5?'auto':'none'; el.style.visibility=o<.004?'hidden':'visible'; return o;
+  const o=Math.min(a,1-b); el.style.setProperty('--o',o.toFixed(3)); el.style.setProperty('--ty',((1-a)*26-b*26).toFixed(1)+'px'); el.style.pointerEvents=o>.5?'auto':'none'; el.style.visibility=o<.004?'hidden':'visible'; return o;
 }
 function scenes(y,G){
   const cp=(y-M.cT)/M.cL;
-  caps.forEach((c,i)=>{const w=capWin[i], o=RM?(cp>=w[1]-.03&&cp<w[3]?1:0):capSet(c,ss((cp-w[0])/(w[1]-w[0])),ss((cp-w[2])/(w[3]-w[2]))); if(RM){c.style.opacity=o;} rails[i].classList.toggle('on',o>.5);});
+  caps.forEach((c,i)=>{const w=capWin[i], o=RM?(cp>=w[1]-.03&&cp<w[3]?1:0):capSet(c,ss((cp-w[0])/(w[1]-w[0])),ss((cp-w[2])/(w[3]-w[2]))); if(RM){c.style.setProperty('--o',o);} rails[i].classList.toggle('on',o>.5);});
   const pp=clamp((y-M.pT)/M.pL), cross=ss((pp-.4)/.12);
   capSet(poseCap,RM?(pp>.46?1:0):ss((pp-.44)/.09),0);
   const w=166.5*G.k, h=w*174.7/166.5;
@@ -818,8 +822,8 @@ function glass(alpha,dt){
     let t=0;
     if(o.e.style.visibility!=='hidden'){
       const b=o.e.getBoundingClientRect();
-      if(b.bottom>0&&b.top<VH){
-        const hit=(r,w)=>{const ix=Math.min(b.right,r[2])-Math.max(b.left,r[0]), iy=Math.min(b.bottom,r[3])-Math.max(b.top,r[1]); if(ix>0&&iy>0) t=Math.max(t,ss(Math.min(ix,iy)/34)*w);};
+      if(b.bottom>-40&&b.top<VH+40){
+        const E=30, hit=(r,w)=>{const ix=Math.min(b.right+E,r[2])-Math.max(b.left-E,r[0]), iy=Math.min(b.bottom+E,r[3])-Math.max(b.top-E,r[1]); if(ix>0&&iy>0) t=Math.max(t,ss(Math.min(ix,iy)/80)*w);};
         for(const r of R) hit(r,alpha);
         if(lr&&o.e===poseCap) hit(lr,lo);
       }
@@ -889,6 +893,7 @@ if(aImg.complete) asciiResize(); else aImg.addEventListener('load',()=>{asciiRes
 /* ---------- small scroll-linked details ---------- */
 const bandImg=$('#band img'), prog=$('#prog'), now=$('#now'), chs=$$('[data-ch]'), navs=$$('.bar nav a');
 const bar=$('#bar'); let barTone='dark', chNow='';
+const fog=$('#fog'); let fogNow=-1;
 function toneAt(yr,theme){
   const n=segs.length, Z=VH*.26, tv=k=>segs[k].dyn?theme:segs[k].tone;
   let i=0; while(i<n-1&&yr>=segs[i].bottom) i++;
@@ -907,6 +912,8 @@ function details(y,theme){
   if(r.bottom>0&&r.top<VH&&!RM) bandImg.style.transform='translate3d(0,'+(((r.top+r.height/2)/VH-.5)*-9).toFixed(2)+'%,0)';
   r=els.ratio.getBoundingClientRect();
   if(r.bottom>0&&r.top<VH) els.ratio.style.setProperty('--p',RM?1:ss((VH*.95-r.top)/(VH*.45)).toFixed(3));
+  const fg=RM?0:ss((y-(M.sT-VH*.62))/(VH*.4))*(1-ss((y-(M.dT-VH*.5))/(VH*.42)));
+  if(Math.abs(fg-fogNow)>.004||(fg===0&&fogNow!==0)){fogNow=fg; fog.style.setProperty('--fog',fg.toFixed(3)); fog.style.visibility=fg>0?'visible':'hidden';}
   prog.style.transform='scaleX('+clamp(y/Math.max(1,M.doc)).toFixed(4)+')';
   const tone=T>.5?'light':'dark';
   if(tone!==barTone){bar.classList.remove(barTone); bar.classList.add(tone); barTone=tone;}
