@@ -24,6 +24,7 @@
   --bg:var(--ink); --fg:var(--paper); --mute:#A9A9A9; --line:rgba(255,255,255,.2);
   --kw:#fff; --kc:var(--silver); --kb:#fff; --km:var(--silver); --kf:var(--lead);
   --gut:clamp(20px,5vw,72px);
+  --fogh:clamp(64px,13vh,120px);
   --ease:cubic-bezier(.2,.7,.15,1);
   color-scheme:dark;
 }
@@ -103,12 +104,12 @@ main{position:relative;z-index:1}
 .cap .tag{display:block}
 .js .pin{height:var(--h,400vh)}
 .js .pin-view{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:block;padding:0}
-.js .cap{position:absolute;left:var(--gut);right:var(--gut);bottom:clamp(30px,7vh,80px);--o:0;transform:translate3d(0,var(--ty,0px),0);pointer-events:none}
+.js .cap{position:absolute;left:var(--gut);right:var(--gut);bottom:calc(var(--fogh)*.8);--o:0;transform:translate3d(0,var(--ty,0px),0);pointer-events:none}
 .js .cap[data-cap="0"]{--o:1}
 @media(min-width:900px){
   .js .cap{right:auto;width:min(30rem,40vw);bottom:auto;top:50%;transform:translate3d(0,calc(-50% + var(--ty,0px)),0)}
   .js .concept .cap[data-cap="0"]{width:min(40rem,47vw)}
-  .js .pose .cap{top:auto;bottom:clamp(40px,9vh,90px);transform:translate3d(0,var(--ty,0px),0)}
+  .js .pose .cap{top:auto;bottom:calc(var(--fogh)*.85);transform:translate3d(0,var(--ty,0px),0)}
 }
 .rail{display:none}
 .js .rail{display:flex;position:absolute;right:var(--gut);top:50%;transform:translateY(-50%);flex-direction:column;gap:8px}
@@ -231,7 +232,7 @@ main{position:relative;z-index:1}
 .deck .card{border-radius:18px;overflow:hidden;background:#111}
 .deck .card img{width:100%;aspect-ratio:16/9;object-fit:cover}
 .deck-cap{display:flex;justify-content:space-between;gap:16px;align-items:baseline;font-family:var(--display);font-size:.85rem}
-.js .deck .pin-view{display:flex;flex-direction:column;justify-content:space-between;padding:84px var(--gut) clamp(26px,6vh,56px)}
+.js .deck .pin-view{display:flex;flex-direction:column;justify-content:space-between;padding:84px var(--gut) calc(var(--fogh)*.8)}
 .js .deck-stage{display:block;position:relative;width:min(100%,calc((100svh - 440px)*16/9),900px);aspect-ratio:16/9;margin:0 auto;perspective:1500px}
 .js .deck .card img{height:100%}
 .js .deck .card{position:absolute;inset:0;transform-origin:50% 100%;will-change:transform,opacity;box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
@@ -251,25 +252,36 @@ main{position:relative;z-index:1}
    feather, so there is no panel and no edge. Driven by --g (0 to 1), raised by the script only while a plate is behind the text.
    Captions fade through their children (--o) so the veil never loses its backdrop to an ancestor with opacity. */
 .js .cap,.js .hero .in,.band figcaption{--g:0;--vt:var(--bg);isolation:isolate}
-.js .hero .in{position:relative;width:fit-content;max-width:calc(100% - 2*var(--gut));padding:0;margin:0 var(--gut) clamp(34px,8vh,80px)}
+.js .hero .in{position:relative;width:fit-content;max-width:calc(100% - 2*var(--gut));padding:0;margin:0 var(--gut) calc(var(--fogh)*.8)}
 .js .cap>*{opacity:var(--o,0)}
 .js .cap.gl::before,.js .cap.gl::after,.js .hero .in.gl::before,.js .hero .in.gl::after,.band figcaption::before,.band figcaption::after{
   content:"";position:absolute;z-index:-1;pointer-events:none;opacity:calc(var(--o,1)*var(--g));
   --m:linear-gradient(90deg,transparent,rgba(0,0,0,.1) calc(var(--f)*.3),rgba(0,0,0,.68) calc(var(--f)*.75),#000 var(--f),#000 calc(100% - var(--f)),rgba(0,0,0,.68) calc(100% - var(--f)*.75),rgba(0,0,0,.1) calc(100% - var(--f)*.3),transparent),linear-gradient(transparent,rgba(0,0,0,.1) calc(var(--f)*.3),rgba(0,0,0,.68) calc(var(--f)*.75),#000 var(--f),#000 calc(100% - var(--f)),rgba(0,0,0,.68) calc(100% - var(--f)*.75),rgba(0,0,0,.1) calc(100% - var(--f)*.3),transparent);
   -webkit-mask:var(--m);-webkit-mask-composite:source-in;mask:var(--m);mask-composite:intersect;
 }
-.js .cap.gl::before,.js .hero .in.gl::before,.band figcaption::before{--f:100px;inset:-110px;background:color-mix(in srgb,var(--vt) 22%,transparent);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
-.js .cap.gl::after,.js .hero .in.gl::after,.band figcaption::after{--f:66px;inset:-44px;background:color-mix(in srgb,var(--vt) 46%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.js .cap.gl::before,.js .hero .in.gl::before,.band figcaption::before{--f:100px;inset:-110px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.js .cap.gl::after,.js .hero .in.gl::after,.band figcaption::after{--f:66px;inset:-44px;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
 .band figcaption{--g:1;--vt:#050505}
 .band figcaption::before{background:rgba(5,5,5,.16)}
 .band figcaption::after{background:rgba(5,5,5,.3)}
 
-/* a very light blur along the bottom edge of the window in the reading chapters: content comes into focus as it scrolls up */
+/* a light blur along the bottom edge of the window, on every scene: content comes into focus as it scrolls up.
+   Text that stays pinned near the bottom is kept above it (see --fogh). It lifts at the very end so the footer reads. */
 .fog{display:none}
-.js .fog{display:block;position:fixed;z-index:15;left:0;right:0;bottom:0;height:20vh;pointer-events:none}
+.js .fog{display:block;position:fixed;z-index:15;left:0;right:0;bottom:0;height:var(--fogh);pointer-events:none}
 .fog i{position:absolute;left:0;right:0;bottom:0;opacity:var(--fog,0)}
-.fog i:first-child{height:100%;-webkit-backdrop-filter:blur(1px);backdrop-filter:blur(1px);-webkit-mask:linear-gradient(transparent,#000 75%);mask:linear-gradient(transparent,#000 75%)}
-.fog i:last-child{height:46%;-webkit-backdrop-filter:blur(2.4px);backdrop-filter:blur(2.4px);-webkit-mask:linear-gradient(transparent,#000 90%);mask:linear-gradient(transparent,#000 90%)}
+.fog i:first-child{height:100%;-webkit-backdrop-filter:blur(1.4px);backdrop-filter:blur(1.4px);-webkit-mask:linear-gradient(transparent,#000 70%);mask:linear-gradient(transparent,#000 70%)}
+.fog i:last-child{height:56%;-webkit-backdrop-filter:blur(3.2px);backdrop-filter:blur(3.2px);-webkit-mask:linear-gradient(transparent,#000 80%);mask:linear-gradient(transparent,#000 80%)}
+
+/* the 3D scene itself thins out where text sits over it: a soft-edged opening in the stage, placed by the script on the text
+   block (--hx0..--hy1) and opened by --hg. Nothing is painted over the page, so the plain background stays exactly as it is. */
+.stage.hole{
+  --F:96px;--a:rgba(0,0,0,calc(var(--hg)*.8));--a1:rgba(0,0,0,calc(var(--hg)*.08));--a2:rgba(0,0,0,calc(var(--hg)*.55));
+  --mx:linear-gradient(90deg,transparent calc(var(--hx0) - var(--F)),var(--a1) calc(var(--hx0) - var(--F)*.7),var(--a2) calc(var(--hx0) - var(--F)*.25),var(--a) var(--hx0),var(--a) var(--hx1),var(--a2) calc(var(--hx1) + var(--F)*.25),var(--a1) calc(var(--hx1) + var(--F)*.7),transparent calc(var(--hx1) + var(--F)));
+  --my:linear-gradient(180deg,transparent calc(var(--hy0) - var(--F)),rgba(0,0,0,.1) calc(var(--hy0) - var(--F)*.7),rgba(0,0,0,.68) calc(var(--hy0) - var(--F)*.25),#000 var(--hy0),#000 var(--hy1),rgba(0,0,0,.68) calc(var(--hy1) + var(--F)*.25),rgba(0,0,0,.1) calc(var(--hy1) + var(--F)*.7),transparent calc(var(--hy1) + var(--F)));
+  -webkit-mask:linear-gradient(#000,#000),var(--mx),var(--my);-webkit-mask-composite:source-out,source-in;
+  mask:linear-gradient(#000,#000),var(--mx),var(--my);mask-composite:subtract,intersect;
+}
 
 </style>
 </head>
@@ -290,7 +302,7 @@ main{position:relative;z-index:1}
 <section id="topo" class="scene hero dark" data-ch="Brand system">
   <div class="in">
     <h1><span class="vh">West Co. brand system</span><svg class="wm" viewBox="0 0 346.9 84.5" aria-hidden="true"><use href="#lk-w"/></svg></h1>
-    <p>Sistema de marca. Símbolo, tipografia, cor, voz e aplicações em um só lugar. Versão 1.0, novembro de 2026.</p>
+    <p>Tudo o que a West Co. precisa para ser reconhecida em qualquer lugar: símbolo, tipografia, cor, voz e aplicações.</p>
     <span class="cue" aria-hidden="true"><i></i>Role para percorrer</span>
   </div>
 </section>
@@ -602,7 +614,7 @@ main{position:relative;z-index:1}
     <p class="d2 sig">Influência que gera negócios.</p>
     <footer class="foot">
       <svg viewBox="0 0 346.9 84.5" role="img" aria-label="west co."><use href="#lk-w"/></svg>
-      <span>Sistema de marca, versão 1.0. Novembro de 2026.</span>
+      <span>Feito para a West Co., novembro de 2026.</span>
       <a href="#topo">Voltar ao início</a>
     </footer>
   </div>
@@ -634,6 +646,9 @@ for(let i=-2;i<=6;i++){
   const z=i<=0?41.7-i*23:i===1?20.8:(2-i)*25;
   PL.push({i,w,h,r,main,x,y:h/2-71.5,z});
 }
+{ const by=i=>PL.find(p=>p.i===i); let r=0;
+  // each in-between plate is tied to the fixed plate just in front of it, so it fans out from behind that plate
+  for(const p of PL) if(p.main<0){ p.from=by(p.i<2?0:p.i<4?2:4); p.rank=r++; } }
 const TD=[[103,103,103],[187,187,187],[255,255,255]], TL=[[152,152,152],[68,68,68],[5,5,5]];
 const BGD=[5,5,5], BGL=[255,255,255];
 let VW=innerWidth, VH=innerHeight, MOB=VW<900;
@@ -647,9 +662,13 @@ function compute(s,time){
     const t=clamp(p.i/4);
     const td=t<.5?mix(TD[0],TD[1],t*2):mix(TD[1],TD[2],t*2-1), tl=t<.5?mix(TL[0],TL[1],t*2):mix(TL[1],TL[2],t*2-1);
     const tone=mix(td,tl,s.theme), ghost=p.main<0;
-    const f=ghost?s.fg:(p.main===0?s.f0:p.main===1?s.f1:s.f2), vis=ghost?s.row:1;
+    const f=ghost?s.fg:(p.main===0?s.f0:p.main===1?s.f1:s.f2);
     const wave=(Math.sin(p.i*.85+s.ph)*11+(RM?0:Math.sin(time*1.3+p.i*.85)*5))*s.wave;
-    return {x:p.x,y:p.y+wave-(ghost?(1-s.row)*46:0),z:p.z*s.spread,rz:s.fan*(p.i-2)*7,sc:ghost?lerp(.8,1,s.row):1,sz:lerp(1,.04,s.flat),col:mix(bg,tone,lerp(.13,1,f)*vis),vis};
+    const col=mix(bg,tone,lerp(.13,1,f));
+    if(!ghost) return {x:p.x,y:p.y+wave,z:p.z*s.spread,rz:s.fan*(p.i-2)*7,sc:1,sz:lerp(1,.04,s.flat),col,vis:1};
+    // in-between plates slide out of the fixed plate beside them, growing and fading in one after another, and return the same way
+    const e=ss(clamp(s.row*1.5-p.rank*.1)), a=p.from;
+    return {x:lerp(a.x,p.x,e),y:lerp(a.y,p.y,e)+wave*e,z:lerp(a.z,p.z,e)*s.spread,rz:s.fan*(p.i-2)*7,sc:lerp(p.i<0?.3:.55,1,e),sz:lerp(1,.04,s.flat)*lerp(.3,1,e),col,vis:e};
   });
   return {G,P,bg};
 }
@@ -673,8 +692,8 @@ function cssStage(host){
       g.style.transform='translate3d('+G.px.toFixed(1)+'px,'+G.py.toFixed(1)+'px,0) rotateX('+(-G.rx).toFixed(2)+'deg) rotateY('+G.ry.toFixed(2)+'deg) scale3d('+G.k.toFixed(4)+','+G.k.toFixed(4)+','+G.k.toFixed(4)+')';
       for(let n=0;n<P.length;n++){
         const o=slabs[n],p=P[n];
-        if(p.vis<.01){o.s.style.display='none';continue}
-        o.s.style.display='';
+        if(p.vis<.004){o.s.style.display='none';continue}
+        o.s.style.display=''; o.s.style.opacity=p.vis<.999?p.vis.toFixed(3):'';
         o.s.style.transform='translate3d('+p.x.toFixed(1)+'px,'+(-p.y).toFixed(1)+'px,'+p.z.toFixed(1)+'px) rotateZ('+(-p.rz).toFixed(2)+'deg) scale('+p.sc.toFixed(3)+')';
         const th=THICK*p.sz, face=rgb(p.col), lum=(p.col[0]+p.col[1]+p.col[2])/3, side=rgb(mix(p.col,lum>120?[0,0,0]:[255,255,255],.2));
         for(let j=0;j<N;j++){const l=o.L[j]; l.style.transform='translateZ('+((j/(N-1)-.5)*th).toFixed(2)+'px)'; l.style.background=j===N-1?face:side;}
@@ -719,9 +738,10 @@ function threeStage(canvas){
     draw(G,P){
       g.position.set(G.px,-G.py,0); g.rotation.set(rad(G.rx),rad(G.ry),0); g.scale.set(G.k,G.k,G.k);
       for(let n=0;n<P.length;n++){
-        const m=meshes[n],p=P[n]; m.visible=p.vis>.01; if(!m.visible) continue;
+        const m=meshes[n],p=P[n]; m.visible=p.vis>.004; if(!m.visible) continue;
         m.position.set(p.x,p.y,p.z); m.rotation.z=rad(p.rz); m.scale.set(p.sc,p.sc,p.sc*p.sz);
         m.material.metalness=m.material.userData.metal*(1-G.flat); 
+        if(m.material.opacity!==p.vis){ m.material.opacity=p.vis; const tr=p.vis<.999; if(m.material.transparent!==tr){m.material.transparent=tr; m.material.needsUpdate=true;} }
         m.material.color.setRGB(p.col[0]/255,p.col[1]/255,p.col[2]/255,T.SRGBColorSpace);
       }
       R.render(scene,cam);
@@ -749,7 +769,7 @@ const stageEl=$('.stage'), canvas=$('#gl');
 let stage=cssStage(stageEl); canvas.style.display='none';
 const S=o=>Object.assign({rx:18,ry:-34,spread:1.2,flat:0,scale:1,ox:0,oy:0,theme:0,f0:1,f1:1,f2:1,fg:1,row:0,wave:0,ph:0,fan:0,idle:1},o);
 const els={concept:$('.concept'),pose:$('.pose'),closing:$('.closing'),deck:$('.deck'),ascii:$('.ascii'),band:$('#band'),ratio:$('#ratio')};
-let keys=[], M={}, segs=[];
+let keys=[], M={}, segs=[], sBlur=0;
 const tones=$$('main > *');
 const REV='.sec .head>*,.sec h3.d3,.sec .block>p,.ver,.chip,.facts li,.scale li,.pillars li,.weights li,.lines li,.say>div,.diagram,.mins,.donts li,.spec>*,.card-back,.tester,.get li,.rule figure,.ratio,.ratio-key,.matter,.seg,.ascii-txt>*,.deck .head,.deck-info';
 const revAll=$$(REV), rev=RM?[]:revAll.filter(e=>!revAll.some(o=>o!==e&&o.contains(e))).map(e=>({e,top:0,lag:0,p:-1}));
@@ -774,8 +794,8 @@ function measure(){
     {y:c(.78),s:at(pos.con,{rx:17,ry:-53,spread:2.3,f0:1,f1:0,f2:0,idle:.4})},
     {y:c(.92),s:at(pos.con,{rx:17,ry:-51,spread:2.3,f0:1,f1:0,f2:0,idle:.4})},
     {y:c(1),s:at(pos.con,{rx:20,ry:-47,spread:1.5,idle:.4})},
-    {y:q(.5),s:at(pos.pose,{rx:33,ry:-45,spread:1,flat:1,theme:1,scale:big,idle:0})},
-    {y:q(1),s:at(pos.pose,{rx:33,ry:-45,spread:1,flat:1,theme:1,scale:big,idle:0})},
+    {y:q(.3),s:at(pos.pose,{rx:33,ry:-45,spread:1,theme:1,scale:big,idle:0})},
+    {y:q(1),s:at(pos.pose,{rx:33,ry:-45,spread:1,theme:1,scale:big,idle:0})},
     {y:q(1)+VH*1.2,s:at(pos.end,{rx:14,ry:-28,spread:1.3,theme:0,fan:1.2})},
     {y:eT-VH,s:at(pos.end,{rx:14,ry:-28,spread:1.3,fan:1.2})},
     {y:eT,s:at(pos.end,{rx:15,ry:-38,spread:1.3,fan:0})}
@@ -802,22 +822,27 @@ function capSet(el,a,b){
 function scenes(y,G){
   const cp=(y-M.cT)/M.cL;
   caps.forEach((c,i)=>{const w=capWin[i], o=RM?(cp>=w[1]-.03&&cp<w[3]?1:0):capSet(c,ss((cp-w[0])/(w[1]-w[0])),ss((cp-w[2])/(w[3]-w[2]))); if(RM){c.style.setProperty('--o',o);} rails[i].classList.toggle('on',o>.5);});
-  const pp=clamp((y-M.pT)/M.pL), cross=ss((pp-.4)/.12);
-  capSet(poseCap,RM?(pp>.46?1:0):ss((pp-.44)/.09),0);
+  // the 3D plates never pose as the flat logo: they blur out and dissolve, and the real vector comes into focus in their place
+  const pp=clamp((y-M.pT)/M.pL), out=ss((pp-.05)/.24), cross=ss((pp-.2)/.2);
+  sBlur=RM?0:out*16;
+  capSet(poseCap,RM?(pp>.42?1:0):ss((pp-.4)/.1),0);
   const w=166.5*G.k, h=w*174.7/166.5;
   poseLogo.style.width=w.toFixed(1)+'px'; poseLogo.style.height=h.toFixed(1)+'px';
-  poseLogo.style.transform='translate('+(VW/2+G.px+8.6*G.k-w/2).toFixed(1)+'px,'+(VH/2+G.py-11.8*G.k-h/2).toFixed(1)+'px)';
+  poseLogo.style.transform='translate('+(VW/2+G.px+8.6*G.k-w/2).toFixed(1)+'px,'+(VH/2+G.py-11.8*G.k-h/2).toFixed(1)+'px) scale('+(RM?1:lerp(.95,1,cross)).toFixed(4)+')';
+  poseLogo.style.filter=(!RM&&cross>0&&cross<.999)?'blur('+((1-cross)*12).toFixed(1)+'px)':'';
   poseLogo.style.opacity=cross.toFixed(3);
-  if(y>M.pT+M.pL+VH) return ss((y-(M.eT-VH*.5))/(VH*.42));
-  return 1-cross;
+  if(y>M.pT+M.pL+VH){ sBlur=0; return ss((y-(M.eT-VH*.5))/(VH*.42)); }
+  return 1-out;
 }
 
 /* ---------- glass behind text, only while a plate is actually behind it ---------- */
 const glassEls=[$('.hero .in'),...caps,poseCap].map(e=>({e,g:0,on:false}));
+const hole={on:false,r:[0,0,0,0]};
 function glass(alpha,dt){
   if(alpha<=.02&&!glassEls.some(o=>o.on)) return;
   const R=alpha>.02?stage.rects():[], lo=parseFloat(poseLogo.style.opacity)||0; let lr=null;
   if(lo>.02){const b=poseLogo.getBoundingClientRect(); lr=[b.left,b.top,b.right,b.bottom];}
+  let best=null,bestG=0;
   for(const o of glassEls){
     let t=0;
     if(o.e.style.visibility!=='hidden'){
@@ -832,7 +857,15 @@ function glass(alpha,dt){
     const on=o.g>0;
     if(on||o.on) o.e.style.setProperty('--g',o.g.toFixed(3));
     if(on!==o.on){o.on=on; o.e.classList.toggle('gl',on);}
+    if(on&&o.e!==poseCap&&o.g>bestG){bestG=o.g; best=o;}
   }
+  // open the stage where the most affected text block sits
+  if(best){
+    const b=best.e.getBoundingClientRect(), E=22, t=[b.left-E,b.right+E,b.top-E,b.bottom+E];
+    if(!hole.on||RM) hole.r=t; else for(let i=0;i<4;i++) hole.r[i]=lerp(hole.r[i],t[i],1-Math.exp(-dt*14));
+    const st=stageEl.style; st.setProperty('--hx0',hole.r[0].toFixed(1)+'px'); st.setProperty('--hx1',hole.r[1].toFixed(1)+'px'); st.setProperty('--hy0',hole.r[2].toFixed(1)+'px'); st.setProperty('--hy1',hole.r[3].toFixed(1)+'px'); st.setProperty('--hg',bestG.toFixed(3));
+    if(!hole.on){hole.on=true; stageEl.classList.add('hole');}
+  } else if(hole.on){hole.on=false; stageEl.classList.remove('hole');}
 }
 
 /* ---------- deck of applications ---------- */
@@ -912,7 +945,7 @@ function details(y,theme){
   if(r.bottom>0&&r.top<VH&&!RM) bandImg.style.transform='translate3d(0,'+(((r.top+r.height/2)/VH-.5)*-9).toFixed(2)+'%,0)';
   r=els.ratio.getBoundingClientRect();
   if(r.bottom>0&&r.top<VH) els.ratio.style.setProperty('--p',RM?1:ss((VH*.95-r.top)/(VH*.45)).toFixed(3));
-  const fg=RM?0:ss((y-(M.sT-VH*.62))/(VH*.4))*(1-ss((y-(M.dT-VH*.5))/(VH*.42)));
+  const fg=RM?0:1-ss((y-(M.doc-VH*.55))/(VH*.4));
   if(Math.abs(fg-fogNow)>.004||(fg===0&&fogNow!==0)){fogNow=fg; fog.style.setProperty('--fog',fg.toFixed(3)); fog.style.visibility=fg>0?'visible':'hidden';}
   prog.style.transform='scaleX('+clamp(y/Math.max(1,M.doc)).toFixed(4)+')';
   const tone=T>.5?'light':'dark';
@@ -937,7 +970,7 @@ function frame(ms){
   const visible=y<M.pT+M.pL+VH || y>M.eT-VH*.52;
   stageEl.style.visibility=visible?'visible':'hidden';
   if(visible){
-    stageEl.style.opacity=alpha.toFixed(3); stage.draw(G,P);
+    stageEl.style.opacity=alpha.toFixed(3); stageEl.style.filter=sBlur>.05?'blur('+sBlur.toFixed(1)+'px)':''; stage.draw(G,P);
     if(stage.kind==='three'&&alpha>.6&&probes<40){probes++; if(probes>4){ if(stage.probe()) probes=99; else if(++bad>12) useCss(); }}
   }
   glass(visible?alpha:0,dt);
