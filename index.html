@@ -71,7 +71,7 @@ button,input{font:inherit;color:inherit}
 .bar{position:fixed;z-index:20;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:6px var(--gut);background:var(--bg);background:color-mix(in srgb,var(--bg) 74%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:background .35s,color .35s}
 .bar a{text-decoration:none}
 .bar .home{display:flex;align-items:center;gap:10px;min-height:44px}
-.bar .home svg{width:26px;height:auto}
+.bar .home svg{width:60px;height:auto}
 .bar nav ul{display:none;gap:22px}
 .bar nav a{font-family:var(--display);font-size:.72rem;padding:14px 0;opacity:.6}
 .bar nav a[aria-current="true"]{opacity:1}
@@ -239,27 +239,31 @@ main{position:relative;z-index:1}
 .deck-info p{color:var(--mute);max-width:34rem;min-height:3em}
 
 /* closing */
-.closing .in{width:100%;padding:0 var(--gut) clamp(34px,8vh,80px);display:grid;gap:22px}
-.closing svg{width:clamp(170px,26vw,300px);height:auto}
-.closing p{color:var(--mute);max-width:30rem}
+.closing .in{width:100%;padding:0 var(--gut) clamp(20px,4vh,36px);display:grid;gap:clamp(26px,6vh,60px)}
+.closing .sig{color:var(--fg);max-width:34rem}
+.foot{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);font-size:.8rem;color:var(--mute)}
+.foot svg{width:78px;height:auto;flex:none}
+.foot span{margin-right:auto}
+.foot a{color:var(--fg);text-underline-offset:4px}
 @media (prefers-reduced-motion:reduce){.cue i{animation:none}}
 
-/* glass plate behind text that sits over the 3D scene or a photo: light blur, thin tint, hairline edge.
-   Kept free of ancestors with opacity/will-change, which would cut the backdrop. */
-.js .cap,.js .hero .in,.js .closing .in,.band figcaption{
-  --vp:20px;--vx:min(var(--vp),calc(var(--gut) - 12px));
-  padding:var(--vp);border-radius:22px;
-  border:1px solid rgba(255,255,255,.1);border-color:color-mix(in srgb,var(--fg) 11%,transparent);
-  background:rgba(5,5,5,.4);
-  background:linear-gradient(140deg,color-mix(in srgb,var(--fg) 7%,transparent),transparent 55%),color-mix(in srgb,var(--bg) 44%,transparent);
-  -webkit-backdrop-filter:blur(22px) saturate(1.15);backdrop-filter:blur(22px) saturate(1.15);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 22px 44px -30px rgba(0,0,0,.55);
+/* glass plate behind text. Over the 3D scene it is driven by --g (0 to 1), which the script raises only while a plate
+   is actually behind the text; over the photo band it is always on. Kept free of ancestors with opacity/will-change. */
+.js .cap,.js .hero .in,.band figcaption{
+  --g:0;--vp:20px;--vx:min(var(--vp),calc(var(--gut) - 12px));
+  padding:var(--vp);border-radius:22px;border:1px solid transparent;
 }
-.band figcaption{border-color:rgba(255,255,255,.14);background:linear-gradient(140deg,rgba(255,255,255,.08),transparent 55%),rgba(5,5,5,.3);margin:0 calc(-1*var(--vx)) calc(-1*var(--vp));max-width:calc(30rem + 2*var(--vp))}
+.js .cap.gl,.js .hero .in.gl,.band figcaption{
+  border-color:color-mix(in srgb,var(--fg) calc(var(--g)*11%),transparent);
+  background:linear-gradient(140deg,color-mix(in srgb,var(--fg) calc(var(--g)*7%),transparent),transparent 55%),color-mix(in srgb,var(--bg) calc(var(--g)*44%),transparent);
+  -webkit-backdrop-filter:blur(calc(var(--g)*22px)) saturate(1.15);backdrop-filter:blur(calc(var(--g)*22px)) saturate(1.15);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,calc(var(--g)*.08)),0 22px 44px -30px rgba(0,0,0,calc(var(--g)*.55));
+}
+.band figcaption{--g:1;border-color:rgba(255,255,255,.14);background:linear-gradient(140deg,rgba(255,255,255,.08),transparent 55%),rgba(5,5,5,.3);margin:0 calc(-1*var(--vx)) calc(-1*var(--vp));max-width:calc(30rem + 2*var(--vp))}
 .js .cap{margin:0 calc(-1*var(--vx)) calc(-1*var(--vp));max-width:calc(34rem + 2*var(--vp))}
-.js .hero .in,.js .closing .in{width:fit-content;max-width:calc(100% - 2*(var(--gut) - var(--vx)));margin:0 calc(var(--gut) - var(--vx)) calc(clamp(34px,8vh,80px) - var(--vp))}
+.js .hero .in{width:fit-content;max-width:calc(100% - 2*(var(--gut) - var(--vx)));margin:0 calc(var(--gut) - var(--vx)) calc(clamp(34px,8vh,80px) - var(--vp))}
 @media(min-width:900px){
-  .js .cap,.js .hero .in,.js .closing .in,.band figcaption{--vp:28px;border-radius:28px}
+  .js .cap,.js .hero .in,.band figcaption{--vp:28px;border-radius:28px}
   .js .cap{width:calc(min(30rem,40vw) + 2*var(--vp))}
   .js .concept .cap[data-cap="0"]{width:calc(min(40rem,47vw) + 2*var(--vp))}
 }
@@ -271,7 +275,7 @@ main{position:relative;z-index:1}
 <div class="stage" aria-hidden="true"><canvas id="gl"></canvas></div>
 <div class="prog" id="prog" aria-hidden="true"></div>
 <header class="bar dark" id="bar">
-  <a class="home" href="#topo" aria-label="West Co., voltar ao início"><svg viewBox="0 0 166.5 174.7" aria-hidden="true"><use href="#lk-s"/></svg></a>
+  <a class="home" href="#topo" aria-label="West Co., voltar ao início"><svg viewBox="0 0 346.9 84.5" aria-hidden="true"><use href="#lk-w"/></svg></a>
   <span class="now" id="now" aria-hidden="true">Brand system</span>
   <nav aria-label="Capítulos"><ul>
     <li><a href="#conceito">Conceito</a></li><li><a href="#simbolo">Símbolo</a></li><li><a href="#tipografia">Tipografia</a></li><li><a href="#cor">Cor</a></li><li><a href="#voz">Voz</a></li><li><a href="#aplicacoes">Aplicações</a></li>
@@ -591,9 +595,12 @@ main{position:relative;z-index:1}
 
 <section id="fim" class="scene closing dark" data-ch="West Co.">
   <div class="in">
-    <svg viewBox="0 0 309.9 80.4" role="img" aria-label="west co."><use href="#lk-h"/></svg>
-    <p class="d2" style="color:var(--fg);max-width:34rem">Influência que gera negócios.</p>
-    <p>Sistema de marca da West Co., versão 1.0. Novembro de 2026. <a href="#topo">Voltar ao início</a></p>
+    <p class="d2 sig">Influência que gera negócios.</p>
+    <footer class="foot">
+      <svg viewBox="0 0 346.9 84.5" role="img" aria-label="west co."><use href="#lk-w"/></svg>
+      <span>Sistema de marca, versão 1.0. Novembro de 2026.</span>
+      <a href="#topo">Voltar ao início</a>
+    </footer>
   </div>
 </section>
 </main>
@@ -657,6 +664,7 @@ function cssStage(host){
   host.appendChild(el);
   return {kind:'css',el,
     resize(){el.style.perspective=DIST+'px'},
+    rects(){ return slabs.filter(o=>o.s.style.display!=='none').map(o=>{const r=o.L[N-1].getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom];}); },
     draw(G,P){
       g.style.transform='translate3d('+G.px.toFixed(1)+'px,'+G.py.toFixed(1)+'px,0) rotateX('+(-G.rx).toFixed(2)+'deg) rotateY('+G.ry.toFixed(2)+'deg) scale3d('+G.k.toFixed(4)+','+G.k.toFixed(4)+','+G.k.toFixed(4)+')';
       for(let n=0;n<P.length;n++){
@@ -690,13 +698,14 @@ function threeStage(canvas){
   scene.add(new T.HemisphereLight(0xffffff,0x6e6e6e,3.2));
   const key=new T.DirectionalLight(0xffffff,3.1); key.position.set(-.6,.9,1.2); scene.add(key);
   const rim=new T.DirectionalLight(0xffffff,1.8); rim.position.set(1,.5,-.9); scene.add(rim);
-  const g=new T.Group(); scene.add(g);
+  const g=new T.Group(); scene.add(g); const pv=new T.Vector3();
   const meshes=PL.map(p=>{
     const BV=1.6, s=new T.Shape(), w=p.w/2-BV, h=p.h/2-BV, r=Math.max(2,p.r-BV);
     s.moveTo(-w+r,-h); s.lineTo(w-r,-h); s.quadraticCurveTo(w,-h,w,-h+r); s.lineTo(w,h-r); s.quadraticCurveTo(w,h,w-r,h);
     s.lineTo(-w+r,h); s.quadraticCurveTo(-w,h,-w,h-r); s.lineTo(-w,-h+r); s.quadraticCurveTo(-w,-h,-w+r,-h);
     const geo=new T.ExtrudeGeometry(s,{depth:THICK,bevelEnabled:true,bevelThickness:BV,bevelSize:BV,bevelSegments:4,curveSegments:14});
     geo.translate(0,0,-THICK/2);
+    geo.computeBoundingBox();
     const mat=new T.MeshPhysicalMaterial({color:0xffffff,roughness:p.main===2?.4:.32,metalness:0,clearcoat:p.main===2?.15:.6,clearcoatRoughness:.28});
     mat.userData.metal=p.main===2?.34:.04;
     const m=new T.Mesh(geo,mat); g.add(m); return m;
@@ -712,6 +721,15 @@ function threeStage(canvas){
         m.material.color.setRGB(p.col[0]/255,p.col[1]/255,p.col[2]/255,T.SRGBColorSpace);
       }
       R.render(scene,cam);
+    },
+    // screen-space box of each visible plate, used to decide where text needs glass behind it
+    rects(){
+      const out=[];
+      for(const m of meshes){ if(!m.visible) continue; const b=m.geometry.boundingBox; let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+        for(let i=0;i<8;i++){ pv.set(i&1?b.max.x:b.min.x,i&2?b.max.y:b.min.y,i&4?b.max.z:b.min.z).applyMatrix4(m.matrixWorld).project(cam);
+          const sx=(pv.x+1)/2*VW, sy=(1-pv.y)/2*VH; if(sx<x0)x0=sx; if(sx>x1)x1=sx; if(sy<y0)y0=sy; if(sy>y1)y1=sy; }
+        const mx=(x1-x0)*.06,my=(y1-y0)*.06; out.push([x0+mx,y0+my,x1-mx,y1-my]); }
+      return out;
     },
     probe(){
       try{const gl=R.getContext(), w=gl.drawingBufferWidth, h=gl.drawingBufferHeight, buf=new Uint8Array(w*4);
@@ -788,6 +806,29 @@ function scenes(y,G){
   poseLogo.style.opacity=cross.toFixed(3);
   if(y>M.pT+M.pL+VH) return ss((y-(M.eT-VH*.5))/(VH*.42));
   return 1-cross;
+}
+
+/* ---------- glass behind text, only while a plate is actually behind it ---------- */
+const glassEls=[$('.hero .in'),...caps,poseCap].map(e=>({e,g:0,on:false}));
+function glass(alpha,dt){
+  if(alpha<=.02&&!glassEls.some(o=>o.on)) return;
+  const R=alpha>.02?stage.rects():[], lo=parseFloat(poseLogo.style.opacity)||0; let lr=null;
+  if(lo>.02){const b=poseLogo.getBoundingClientRect(); lr=[b.left,b.top,b.right,b.bottom];}
+  for(const o of glassEls){
+    let t=0;
+    if(o.e.style.visibility!=='hidden'){
+      const b=o.e.getBoundingClientRect();
+      if(b.bottom>0&&b.top<VH){
+        const hit=(r,w)=>{const ix=Math.min(b.right,r[2])-Math.max(b.left,r[0]), iy=Math.min(b.bottom,r[3])-Math.max(b.top,r[1]); if(ix>0&&iy>0) t=Math.max(t,ss(Math.min(ix,iy)/34)*w);};
+        for(const r of R) hit(r,alpha);
+        if(lr&&o.e===poseCap) hit(lr,lo);
+      }
+    }
+    o.g=RM?t:lerp(o.g,t,1-Math.exp(-dt*9)); if(o.g<.004&&t===0) o.g=0;
+    const on=o.g>0;
+    if(on||o.on) o.e.style.setProperty('--g',o.g.toFixed(3));
+    if(on!==o.on){o.on=on; o.e.classList.toggle('gl',on);}
+  }
 }
 
 /* ---------- deck of applications ---------- */
@@ -892,6 +933,7 @@ function frame(ms){
     stageEl.style.opacity=alpha.toFixed(3); stage.draw(G,P);
     if(stage.kind==='three'&&alpha>.6&&probes<40){probes++; if(probes>4){ if(stage.probe()) probes=99; else if(++bad>12) useCss(); }}
   }
+  glass(visible?alpha:0,dt);
   deck(y,dt); ascii(); details(y,s.theme);
   requestAnimationFrame(frame);
 }
